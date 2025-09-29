@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Elliptic Curve Calculator</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Elliptic Curve Calculator</h1>
+            <p>Build elliptic curves with key lengths over 256 bits</p>
+        </header>
+
+        <div class="main-content">
+            <div class="input-section">
+                <h2>Curve Parameters</h2>
+                <div class="input-group">
+                    <label for="coeff-a">Coefficient a:</label>
+                    <input type="text" id="coeff-a" placeholder="Enter coefficient a" value="2">
+                </div>
+                <div class="input-group">
+                    <label for="coeff-b">Coefficient b:</label>
+                    <input type="text" id="coeff-b" placeholder="Enter coefficient b" value="3">
+                </div>
+                <div class="input-group">
+                    <label for="modulus-n">Modulus n (prime > 2^256):</label>
+                    <input type="text" id="modulus-n" placeholder="Enter large prime modulus" value="231584178474632390847141970017375815706539969331281128078915168015826259279873">
+                </div>
+                <button id="generate-curve" class="btn-primary">Generate Curve</button>
+            </div>
+
+            <div class="curve-info">
+                <h3>Curve Information</h3>
+                <div id="curve-details">
+                    <p>Curve equation: y² = x³ + ax + b (mod n)</p>
+                    <p id="key-length">Key length: Not calculated</p>
+                    <p id="curve-equation">Current curve: Not set</p>
+                </div>
+            </div>
+
+            <div class="operations-section">
+                <h2>Point Operations</h2>
+                <div class="operation-group">
+                    <h3>Compute Point on Curve</h3>
+                    <div class="input-group">
+                        <label for="x-coord">X coordinate:</label>
+                        <input type="text" id="x-coord" placeholder="Enter x coordinate">
+                    </div>
+                    <button id="compute-point" class="btn-secondary">Compute Y</button>
+                    <div id="point-result"></div>
+                </div>
+
+                <div class="operation-group">
+                    <h3>Point Addition</h3>
+                    <div class="point-input">
+                        <label>Point P:</label>
+                        <input type="text" id="px" placeholder="x1">
+                        <input type="text" id="py" placeholder="y1">
+                    </div>
+                    <div class="point-input">
+                        <label>Point Q:</label>
+                        <input type="text" id="qx" placeholder="x2">
+                        <input type="text" id="qy" placeholder="y2">
+                    </div>
+                    <button id="add-points" class="btn-secondary">Add Points</button>
+                    <div id="addition-result"></div>
+                </div>
+
+                <div class="operation-group">
+                    <h3>Point Multiplication</h3>
+                    <div class="point-input">
+                        <label>Point P:</label>
+                        <input type="text" id="mult-px" placeholder="x">
+                        <input type="text" id="mult-py" placeholder="y">
+                    </div>
+                    <div class="input-group">
+                        <label for="scalar">Scalar k:</label>
+                        <input type="text" id="scalar" placeholder="Enter scalar multiplier">
+                    </div>
+                    <button id="multiply-point" class="btn-secondary">Multiply Point</button>
+                    <div id="multiplication-result"></div>
+                </div>
+            </div>
+
+            <div class="visualization-section">
+                <h2>Curve Visualization</h2>
+                <div id="curve-plot"></div>
+                <div class="plot-controls">
+                    <label for="plot-range">Plot range:</label>
+                    <input type="number" id="plot-range" value="10" min="5" max="100">
+                    <button id="update-plot" class="btn-secondary">Update Plot</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="elliptic.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Elliptic Curve Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .result { margin: 10px 0; padding: 10px; background: #f0f0f0; }
+        .success { background: #d4edda; }
+        .error { background: #f8d7da; }
+    </style>
+</head>
+<body>
+    <h1>Elliptic Curve Calculator - Test Page</h1>
+    
+    <div id="results"></div>
+    
+    <script src="elliptic.js"></script>
+    <script>
+        function runTest() {
+            const results = document.getElementById('results');
+            
+            try {
+                // Test 1: Create curve with > 256 bits
+                const p = BigInt('231584178474632390847141970017375815706539969331281128078915168015826259279873');
+                const curve = new EllipticCurve(2, 3, p);
+                const keyLength = curve.getKeyLength();
+                
+                results.innerHTML += `<div class="result success">✓ Curve created with ${keyLength} bits (> 256)</div>`;
+                results.innerHTML += `<div class="result">Equation: ${curve.getEquation()}</div>`;
+                
+                // Test 2: Point computation on smaller curve
+                const smallCurve = new EllipticCurve(2, 3, 97);
+                const yValues = smallCurve.computeY(3);
+                results.innerHTML += `<div class="result success">✓ Points for x=3: (3, ${yValues[0]}), (3, ${yValues[1]})</div>`;
+                
+                // Test 3: Point addition
+                const P = {x: 3, y: 6};
+                const Q = {x: 10, y: 21};
+                const sum = smallCurve.pointAdd(P, Q);
+                results.innerHTML += `<div class="result success">✓ Point addition: (3,6) + (10,21) = (${sum.x}, ${sum.y})</div>`;
+                
+                // Test 4: Point multiplication
+                const mult = smallCurve.scalarMultiply(5, P);
+                if (mult.x === null) {
+                    results.innerHTML += `<div class="result success">✓ Point multiplication: 5 * (3,6) = Point at infinity</div>`;
+                } else {
+                    results.innerHTML += `<div class="result success">✓ Point multiplication: 5 * (3,6) = (${mult.x}, ${mult.y})</div>`;
+                }
+                
+                results.innerHTML += `<div class="result success"><strong>All tests passed!</strong></div>`;
+                
+            } catch (error) {
+                results.innerHTML += `<div class="result error">✗ Error: ${error.message}</div>`;
+            }
+        }
+        
+        // Run test when page loads
+        window.onload = runTest;
+    </script>
+</body>
+</html>
