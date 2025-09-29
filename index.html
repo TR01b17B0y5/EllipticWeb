@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EllipticWeb - Elliptic Curve Cryptography</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        /* Inline Font Awesome icons */
+        .fas { font-family: monospace; }
+        .fa-shield-alt:before { content: "🛡️"; }
+        .fa-moon:before { content: "🌙"; }
+        .fa-sun:before { content: "☀️"; }
+        .fa-question-circle:before { content: "❓"; }
+        .fa-key:before { content: "🔑"; }
+        .fa-cog:before { content: "⚙️"; }
+        .fa-copy:before { content: "📋"; }
+        .fa-download:before { content: "⬇️"; }
+        .fa-lock:before { content: "🔒"; }
+        .fa-unlock:before { content: "🔓"; }
+        .fa-signature:before { content: "✍️"; }
+        .fa-check-circle:before { content: "✅"; }
+        .fa-database:before { content: "💾"; }
+        .fa-upload:before { content: "⬆️"; }
+        .fa-trash:before { content: "🗑️"; }
+    </style>
+</head>
+<body>
+    <div class="app">
+        <!-- Header -->
+        <header class="header">
+            <div class="container">
+                <h1 class="logo">
+                    <i class="fas fa-shield-alt"></i>
+                    EllipticWeb
+                </h1>
+                <div class="header-controls">
+                    <button id="theme-toggle" class="btn-icon" title="Toggle Theme">
+                        <i class="fas fa-moon"></i>
+                    </button>
+                    <button id="help-btn" class="btn-icon" title="Help">
+                        <i class="fas fa-question-circle"></i>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main">
+            <div class="container">
+                <!-- Hero Section -->
+                <section class="hero">
+                    <h2>Elliptic Curve Cryptography</h2>
+                    <p>Secure 256-bit elliptic curve operations for encryption, decryption, and digital signatures</p>
+                </section>
+
+                <!-- Navigation Tabs -->
+                <nav class="tabs">
+                    <button class="tab-btn active" data-tab="keygen">Key Generation</button>
+                    <button class="tab-btn" data-tab="encrypt">Encrypt/Decrypt</button>
+                    <button class="tab-btn" data-tab="sign">Digital Signature</button>
+                    <button class="tab-btn" data-tab="manage">Key Management</button>
+                </nav>
+
+                <!-- Tab Contents -->
+                <div class="tab-content">
+                    <!-- Key Generation Tab -->
+                    <div id="keygen" class="tab-panel active">
+                        <div class="panel">
+                            <h3><i class="fas fa-key"></i> Generate Key Pair</h3>
+                            <div class="form-group">
+                                <label for="curve-select">Elliptic Curve:</label>
+                                <select id="curve-select" class="form-control">
+                                    <option value="secp256k1">secp256k1 (Bitcoin)</option>
+                                    <option value="p256">P-256 (NIST)</option>
+                                    <option value="p384">P-384 (NIST)</option>
+                                    <option value="p521">P-521 (NIST)</option>
+                                </select>
+                            </div>
+                            <button id="generate-keys" class="btn btn-primary">
+                                <i class="fas fa-cog"></i> Generate Keys
+                            </button>
+                            <div id="key-output" class="output-section" style="display: none;">
+                                <div class="key-pair">
+                                    <div class="key-item">
+                                        <label>Private Key:</label>
+                                        <div class="key-display">
+                                            <textarea id="private-key" readonly></textarea>
+                                            <button class="btn-copy" data-target="private-key">
+                                                <i class="fas fa-copy"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="key-item">
+                                        <label>Public Key:</label>
+                                        <div class="key-display">
+                                            <textarea id="public-key" readonly></textarea>
+                                            <button class="btn-copy" data-target="public-key">
+                                                <i class="fas fa-copy"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="actions">
+                                    <button id="download-keys" class="btn btn-secondary">
+                                        <i class="fas fa-download"></i> Download Keys
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Encrypt/Decrypt Tab -->
+                    <div id="encrypt" class="tab-panel">
+                        <div class="panel">
+                            <h3><i class="fas fa-lock"></i> Encryption & Decryption</h3>
+                            <div class="crypto-section">
+                                <div class="form-group">
+                                    <label for="encrypt-public-key">Recipient's Public Key:</label>
+                                    <textarea id="encrypt-public-key" class="form-control" placeholder="Paste public key here..."></textarea>
+                                </div>
+                                <div class="form-group">
+                                    <label for="message-input">Message:</label>
+                                    <textarea id="message-input" class="form-control" placeholder="Enter message to encrypt..."></textarea>
+                                </div>
+                                <div class="actions">
+                                    <button id="encrypt-btn" class="btn btn-primary">
+                                        <i class="fas fa-lock"></i> Encrypt
+                                    </button>
+                                    <button id="decrypt-btn" class="btn btn-secondary">
+                                        <i class="fas fa-unlock"></i> Decrypt
+                                    </button>
+                                </div>
+                                <div id="crypto-output" class="output-section" style="display: none;">
+                                    <label>Result:</label>
+                                    <div class="key-display">
+                                        <textarea id="crypto-result" readonly></textarea>
+                                        <button class="btn-copy" data-target="crypto-result">
+                                            <i class="fas fa-copy"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Digital Signature Tab -->
+                    <div id="sign" class="tab-panel">
+                        <div class="panel">
+                            <h3><i class="fas fa-signature"></i> Digital Signature</h3>
+                            <div class="sign-section">
+                                <div class="form-group">
+                                    <label for="sign-private-key">Your Private Key:</label>
+                                    <textarea id="sign-private-key" class="form-control" placeholder="Paste private key here..."></textarea>
+                                </div>
+                                <div class="form-group">
+                                    <label for="message-to-sign">Message to Sign:</label>
+                                    <textarea id="message-to-sign" class="form-control" placeholder="Enter message to sign..."></textarea>
+                                </div>
+                                <div class="actions">
+                                    <button id="sign-btn" class="btn btn-primary">
+                                        <i class="fas fa-signature"></i> Sign Message
+                                    </button>
+                                    <button id="verify-btn" class="btn btn-secondary">
+                                        <i class="fas fa-check-circle"></i> Verify Signature
+                                    </button>
+                                </div>
+                                <div id="signature-output" class="output-section" style="display: none;">
+                                    <label>Signature:</label>
+                                    <div class="key-display">
+                                        <textarea id="signature-result" readonly></textarea>
+                                        <button class="btn-copy" data-target="signature-result">
+                                            <i class="fas fa-copy"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Key Management Tab -->
+                    <div id="manage" class="tab-panel">
+                        <div class="panel">
+                            <h3><i class="fas fa-database"></i> Key Management</h3>
+                            <div class="key-management">
+                                <div class="form-group">
+                                    <label>Import Keys:</label>
+                                    <input type="file" id="file-input" accept=".json,.txt,.pem" class="file-input">
+                                    <button id="import-btn" class="btn btn-secondary">
+                                        <i class="fas fa-upload"></i> Import Keys
+                                    </button>
+                                </div>
+                                <div class="saved-keys">
+                                    <h4>Saved Keys</h4>
+                                    <div id="keys-list" class="keys-list">
+                                        <p class="no-keys">No keys saved yet. Generate or import keys to get started.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Help Modal -->
+        <div id="help-modal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>Help & Documentation</h3>
+                    <button class="close-btn">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <h4>About EllipticWeb</h4>
+                    <p>EllipticWeb is a web-based tool for elliptic curve cryptography operations. It supports 256-bit elliptic curves for secure key generation, encryption, decryption, and digital signatures.</p>
+                    
+                    <h4>Key Generation</h4>
+                    <p>Generate cryptographically secure key pairs using various elliptic curves. Private keys should be kept secret, while public keys can be shared.</p>
+                    
+                    <h4>Encryption/Decryption</h4>
+                    <p>Encrypt messages using the recipient's public key. Only the holder of the corresponding private key can decrypt the message.</p>
+                    
+                    <h4>Digital Signatures</h4>
+                    <p>Sign messages with your private key to prove authenticity. Others can verify signatures using your public key.</p>
+                    
+                    <h4>Security Notes</h4>
+                    <ul>
+                        <li>Never share your private keys</li>
+                        <li>Use strong random number generation</li>
+                        <li>Verify public keys through secure channels</li>
+                        <li>This tool runs entirely in your browser - no data is sent to servers</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Loading Spinner -->
+        <div id="loading" class="loading" style="display: none;">
+            <div class="spinner"></div>
+            <p>Processing...</p>
+        </div>
+
+        <!-- Toast Notifications -->
+        <div id="toast-container" class="toast-container"></div>
+    </div>
+
+    <script src="script-simple.js"></script>
+</body>
+</html>
