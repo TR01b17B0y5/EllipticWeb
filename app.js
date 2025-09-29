@@ -230,12 +230,16 @@ class EllipticCurveApp {
 
     updatePlot() {
         if (!this.curve) {
-            // Show empty plot
-            Plotly.newPlot('curve-plot', [], {
-                title: 'Generate a curve to see visualization',
-                xaxis: { title: 'x' },
-                yaxis: { title: 'y' }
-            });
+            // Show empty plot if Plotly is available
+            if (typeof Plotly !== 'undefined') {
+                Plotly.newPlot('curve-plot', [], {
+                    title: 'Generate a curve to see visualization',
+                    xaxis: { title: 'x' },
+                    yaxis: { title: 'y' }
+                });
+            } else {
+                document.getElementById('curve-plot').innerHTML = '<p style="text-align: center; padding: 50px;">Plotly.js not loaded. Visualization unavailable.</p>';
+            }
             return;
         }
 
@@ -255,6 +259,12 @@ class EllipticCurveApp {
     }
 
     plotTheoreticalCurve(range) {
+        // Check if Plotly is available
+        if (typeof Plotly === 'undefined') {
+            document.getElementById('curve-plot').innerHTML = '<p style="text-align: center; padding: 50px;">Plotly.js not loaded. Install Plotly.js to see curve visualization.</p>';
+            return;
+        }
+
         // Generate theoretical curve points for visualization
         const points = [];
         const step = 0.1;
@@ -313,6 +323,12 @@ class EllipticCurveApp {
     }
 
     plotActualPoints(range) {
+        // Check if Plotly is available
+        if (typeof Plotly === 'undefined') {
+            document.getElementById('curve-plot').innerHTML = '<p style="text-align: center; padding: 50px;">Plotly.js not loaded. Install Plotly.js to see curve visualization.</p>';
+            return;
+        }
+
         const points = this.curve.generateSamplePoints(range);
         
         if (points.length === 0) {

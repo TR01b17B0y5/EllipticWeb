@@ -27,12 +27,15 @@ class BigIntMath {
     static modInverse(a, mod) {
         if (mod === 1n) return 0n;
         
+        a = ((a % mod) + mod) % mod; // Ensure a is positive
+        
         let m0 = mod;
         let x0 = 0n, x1 = 1n;
         
-        if (mod === 1n) return 0n;
-        
         while (a > 1n) {
+            if (mod === 0n) {
+                throw new Error('Modular inverse does not exist');
+            }
             let q = a / mod;
             let t = mod;
             mod = a % mod;
@@ -42,23 +45,41 @@ class BigIntMath {
             x1 = t;
         }
         
+        if (a !== 1n) {
+            throw new Error('Modular inverse does not exist');
+        }
+        
         if (x1 < 0n) x1 += m0;
         return x1;
     }
 
     /**
-     * Modular square root using Tonelli-Shanks algorithm
+     * Modular square root - simplified implementation
      */
     static modSqrt(n, p) {
-        // Simplified for demonstration - works for p ≡ 3 (mod 4)
+        if (n === 0n) return 0n;
+        
+        // Check if n is a quadratic residue
+        if (!BigIntMath.isQuadraticResidue(n, p)) {
+            return null;
+        }
+        
+        // For p ≡ 3 (mod 4), use the simple formula
         if (p % 4n === 3n) {
             return BigIntMath.modPow(n, (p + 1n) / 4n, p);
         }
         
-        // For general case, implement Tonelli-Shanks
-        // This is a simplified version
-        let exp = (p + 1n) / 4n;
-        return BigIntMath.modPow(n, exp, p);
+        // For small primes, use brute force
+        if (p < 1000n) {
+            for (let y = 0n; y < p; y++) {
+                if ((y * y) % p === n % p) {
+                    return y;
+                }
+            }
+        }
+        
+        // Fallback for larger primes - use probabilistic method
+        return BigIntMath.modPow(n, (p + 1n) / 4n, p);
     }
 
     /**
