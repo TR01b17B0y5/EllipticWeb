@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EllipticWeb - Elliptic Curve Cryptography</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-lock"></i> EllipticWeb</h1>
+            <p>Comprehensive Elliptic Curve Cryptography with 256+ bit Key Support</p>
+        </header>
+
+        <main>
+            <!-- Curve Selection -->
+            <section class="card">
+                <h2><i class="fas fa-chart-line"></i> Curve Selection</h2>
+                <div class="form-group">
+                    <label for="curve-select">Choose Elliptic Curve:</label>
+                    <select id="curve-select">
+                        <option value="P-256">P-256 (256-bit)</option>
+                        <option value="P-384">P-384 (384-bit)</option>
+                        <option value="P-521">P-521 (521-bit)</option>
+                    </select>
+                    <button id="curve-info-btn" class="btn btn-info">
+                        <i class="fas fa-info-circle"></i> Curve Info
+                    </button>
+                </div>
+                <div id="curve-info" class="info-panel hidden"></div>
+            </section>
+
+            <!-- Key Generation -->
+            <section class="card">
+                <h2><i class="fas fa-key"></i> Key Generation</h2>
+                <div class="form-group">
+                    <button id="generate-keys-btn" class="btn btn-primary">
+                        <i class="fas fa-plus"></i> Generate New Key Pair
+                    </button>
+                </div>
+                <div id="key-result" class="result-panel hidden">
+                    <h3>Generated Keys</h3>
+                    <div class="key-display">
+                        <div class="key-item">
+                            <label>Private Key:</label>
+                            <div class="key-value" id="private-key"></div>
+                        </div>
+                        <div class="key-item">
+                            <label>Public Key (x):</label>
+                            <div class="key-value" id="public-key-x"></div>
+                        </div>
+                        <div class="key-item">
+                            <label>Public Key (y):</label>
+                            <div class="key-value" id="public-key-y"></div>
+                        </div>
+                        <div class="key-info">
+                            <span class="info-badge" id="key-size-info"></span>
+                            <span class="info-badge" id="curve-info-badge"></span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Digital Signature -->
+            <section class="card">
+                <h2><i class="fas fa-signature"></i> Digital Signature</h2>
+                
+                <!-- Signing -->
+                <div class="sub-section">
+                    <h3>Sign Message</h3>
+                    <div class="form-group">
+                        <label for="message-to-sign">Message to Sign:</label>
+                        <textarea id="message-to-sign" placeholder="Enter your message here..." rows="3"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="signing-private-key">Private Key (hex):</label>
+                        <input type="text" id="signing-private-key" placeholder="0x..." class="key-input">
+                    </div>
+                    <div class="form-group">
+                        <button id="sign-btn" class="btn btn-primary">
+                            <i class="fas fa-pen"></i> Sign Message
+                        </button>
+                    </div>
+                    <div id="signature-result" class="result-panel hidden">
+                        <h4>Digital Signature</h4>
+                        <div class="signature-display">
+                            <div class="signature-item">
+                                <label>r:</label>
+                                <div class="signature-value" id="signature-r"></div>
+                            </div>
+                            <div class="signature-item">
+                                <label>s:</label>
+                                <div class="signature-value" id="signature-s"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Verification -->
+                <div class="sub-section">
+                    <h3>Verify Signature</h3>
+                    <div class="form-group">
+                        <label for="message-to-verify">Original Message:</label>
+                        <textarea id="message-to-verify" placeholder="Enter the original message..." rows="3"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="verification-public-key-x">Public Key X (hex):</label>
+                        <input type="text" id="verification-public-key-x" placeholder="0x..." class="key-input">
+                    </div>
+                    <div class="form-group">
+                        <label for="verification-public-key-y">Public Key Y (hex):</label>
+                        <input type="text" id="verification-public-key-y" placeholder="0x..." class="key-input">
+                    </div>
+                    <div class="form-group">
+                        <label for="verification-signature-r">Signature r (hex):</label>
+                        <input type="text" id="verification-signature-r" placeholder="0x..." class="key-input">
+                    </div>
+                    <div class="form-group">
+                        <label for="verification-signature-s">Signature s (hex):</label>
+                        <input type="text" id="verification-signature-s" placeholder="0x..." class="key-input">
+                    </div>
+                    <div class="form-group">
+                        <button id="verify-btn" class="btn btn-secondary">
+                            <i class="fas fa-check"></i> Verify Signature
+                        </button>
+                    </div>
+                    <div id="verification-result" class="result-panel hidden">
+                        <div class="verification-status" id="verification-status"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Quick Actions -->
+            <section class="card">
+                <h2><i class="fas fa-lightning-bolt"></i> Quick Actions</h2>
+                <div class="quick-actions">
+                    <button id="copy-keys-btn" class="btn btn-outline" disabled>
+                        <i class="fas fa-copy"></i> Copy Keys to Signature
+                    </button>
+                    <button id="copy-signature-btn" class="btn btn-outline" disabled>
+                        <i class="fas fa-copy"></i> Copy Signature to Verification
+                    </button>
+                    <button id="clear-all-btn" class="btn btn-outline">
+                        <i class="fas fa-trash"></i> Clear All Fields
+                    </button>
+                </div>
+            </section>
+        </main>
+
+        <footer>
+            <p>&copy; 2024 EllipticWeb - Elliptic Curve Cryptography Application</p>
+            <p>Supports P-256, P-384, and P-521 curves with 256+ bit security</p>
+        </footer>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div id="loading-overlay" class="loading-overlay hidden">
+        <div class="loading-spinner">
+            <i class="fas fa-spinner fa-spin"></i>
+            <p>Processing...</p>
+        </div>
+    </div>
+
+    <!-- Error Modal -->
+    <div id="error-modal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-exclamation-triangle"></i> Error</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p id="error-message"></p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary modal-close">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>
